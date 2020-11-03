@@ -89,26 +89,6 @@ require_once 'config.php';
                 </div>
               </div>
               <div class="row">
-                <!-- <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="categoria">Categoria</label>
-                    <select class="form-control" name="categoria" id="categoria" required>
-                      < ?php foreach (Connection::QueryAll("select * from categoria") as $item) { ?>
-                        <option value="< ?= $item->id ?>">< ?= $item->nome ?></option>
-                      < ?php } ?>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="fornecedor">Fornecedor</label>
-                    <select class="form-control" name="fornecedor" id="fornecedor" required>
-                      < ?php foreach (Connection::QueryAll("select * from fornecedor") as $item) { ?>
-                        <option value="< ?= $item->id ?>">< ?= $item->razao_social ?></option>
-                      < ?php } ?>
-                    </select>
-                  </div>
-                </div> -->
                 <div class="col-12 flex-row-reverse">
                   <div class="form-group float-right">
                     <input class="btn btn-success" type="submit" value="Inserir">
