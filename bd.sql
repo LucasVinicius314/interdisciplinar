@@ -107,13 +107,13 @@ end
 $$
 delimiter ;
 
--- view
+-- views
 
 drop view if exists `ver_produto`;
 create view `ver_produto` as
 select
   `p`.*,
-  coalesce((select sum(quantidade) from transacao where produto_id = `p`.id and tipo = 'compra'), 0) as `quantidade`,
+  (coalesce((select sum(quantidade) from transacao where produto_id = `p`.id and tipo = 'compra'), 0) - coalesce((select sum(quantidade) from transacao where produto_id = `p`.id and tipo = 'venda'), 0)) as `quantidade`,
   `c`.`nome` as `categoria`,
   `f`.`cnpj` as `cnpj`,
   `f`.`razao_social` as `razao_social`,
@@ -121,6 +121,15 @@ select
 from `produto` `p`
 join `fornecedor` `f` on((`p`.`fornecedor_id` = `f`.`id`))
 join `categoria` `c` on((`p`.`categoria_id` = `c`.`id`));
+
+drop view if exists `ver_transacao`;
+create view `ver_transacao` as
+select
+  `t`.*,
+  `p`.`nome` as `pnome`,
+  `p`.`codigo_barra`
+from `transacao` `t`
+join `produto` `p` on((`t`.`produto_id` = `p`.`id`));
 
 insert into categoria (nome) values
 ('Bebidas'),
@@ -138,3 +147,5 @@ select * from categoria;
 select * from fornecedor;
 select * from produto;
 select * from transacao;
+select * from ver_produto;
+select * from ver_transacao;

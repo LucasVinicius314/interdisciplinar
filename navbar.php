@@ -8,6 +8,9 @@
       <li class="nav-item <?= PAGE === 'produtos' ? 'active' : '' ?>">
         <a class="nav-link" href="produtos.php">Produtos</a>
       </li>
+      <li class="nav-item <?= PAGE === 'transacoes' ? 'active' : '' ?>">
+        <a class="nav-link" href="transacoes.php">Transações</a>
+      </li>
       <li class="nav-item <?= PAGE === 'transacao' ? 'active' : '' ?>">
         <a class="nav-link" href="transacao.php">Transação</a>
       </li>
