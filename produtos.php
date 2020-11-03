@@ -1,5 +1,5 @@
 <?php
-define('PAGE', 'cadastro');
+define('PAGE', 'produtos');
 require_once 'config.php';
 ?>
 <!DOCTYPE html>
@@ -12,35 +12,18 @@ require_once 'config.php';
   <?php include 'navbar.php' ?>
 
   <main class="container my-3">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Cadastro</h3>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Cadastrar</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-          <div class="card-body">
-            <form action="cadastro.php?action=create" method="post">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="data">Data da Movimentação</label>
-                    <input class="form-control" type="date" name="data" id="data" required>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="compra">Tipo de Transação</label>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="tipo" id="compra" value="compra" checked>
-                      <label class="form-check-label" for="compra">Compra</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="tipo" id="venda" value="venda">
-                      <label class="form-check-label" for="venda">Venda</label>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div class="modal-body">
+            <form action="produtos.php?action=create&class=produto" method="post">
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
@@ -50,27 +33,8 @@ require_once 'config.php';
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="preco">Preço</label>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text">R$</div>
-                      </div>
-                      <input class="form-control" type="number" name="preco" id="preco" min="0" step="0.01" required>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
                     <label for="nome">Nome do Produto</label>
                     <input class="form-control" type="text" name="nome" id="nome" required>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="quantidade">Quantidade</label>
-                    <input class="form-control" type="number" name="quantidade" id="quantidade" min="0" required>
                   </div>
                 </div>
               </div>
@@ -78,7 +42,7 @@ require_once 'config.php';
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="volume">Volume</label>
-                    <input class="form-control" type="number" name="volume" id="volume" min="0" required>
+                    <input class="form-control" type="number" name="volume" id="volume" value="1" min="0" required>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -111,8 +75,8 @@ require_once 'config.php';
                 </div>
                 <div class="col-12 flex-row-reverse">
                   <div class="form-group float-right">
-                    <input class="btn btn-success" type="submit" value="Inserir">
-                    <input class="btn btn-light" type="button" value="Cancelar" id="cancelar">
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Cadastrar" />
                   </div>
                 </div>
               </div>
@@ -121,11 +85,48 @@ require_once 'config.php';
         </div>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header d-flex flex-row justify-content-between align-items-center">
+            <h3 class="card-title align-middle h-100 pt-2">Produtos</h3>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-plus"></i></button>
+          </div>
+          <div class="card-body">
+            <table id="produtos" class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nome</th>
+                  <th>Quantidade</th>
+                  <th>Categoria</th>
+                  <th>Fornecedor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach (Connection::QueryAll("select * from ver_produto") as $item) { ?>
+                  <tr>
+                    <td><?= $item->codigo_barra ?></td>
+                    <td><?= $item->nome ?></td>
+                    <td><?= $item->quantidade ?></td>
+                    <td><?= $item->categoria ?></td>
+                    <td><?= $item->razao_social ?></td>
+                  </tr>
+                <?php } ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 </body>
 
 <script>
-  $(document).ready(() => $('#cancelar').on('click', () => location = 'produtos.php'))
+  $(document).ready(() => {
+    $('#produtos').DataTable()
+  })
 </script>
 
 </html>

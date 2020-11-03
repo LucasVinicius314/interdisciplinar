@@ -1,5 +1,5 @@
 <?php
-define('PAGE', 'cadastro');
+define('PAGE', 'transacao');
 require_once 'config.php';
 ?>
 <!DOCTYPE html>
@@ -16,10 +16,10 @@ require_once 'config.php';
       <div class="col-md-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Cadastro</h3>
+            <h3 class="card-title h-100 pt-2">Transação</h3>
           </div>
           <div class="card-body">
-            <form action="cadastro.php?action=create" method="post">
+            <form action="produtos.php?action=create&class=transacao" method="post">
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
@@ -64,7 +64,7 @@ require_once 'config.php';
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="nome">Nome do Produto</label>
-                    <input class="form-control" type="text" name="nome" id="nome" required>
+                    <input class="form-control" type="text" name="nome" id="nome" required disabled>
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -78,24 +78,24 @@ require_once 'config.php';
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="volume">Volume</label>
-                    <input class="form-control" type="number" name="volume" id="volume" min="0" required>
+                    <input class="form-control" type="number" name="volume" id="volume" min="0" required disabled>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="medida">Unidade de Medida</label>
-                    <input class="form-control" type="text" name="medida" id="medida" required>
+                    <input class="form-control" type="text" name="medida" id="medida" required disabled>
                   </div>
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6">
+                <!-- <div class="col-md-6">
                   <div class="form-group">
                     <label for="categoria">Categoria</label>
                     <select class="form-control" name="categoria" id="categoria" required>
-                      <?php foreach (Connection::QueryAll("select * from categoria") as $item) { ?>
-                        <option value="<?= $item->id ?>"><?= $item->nome ?></option>
-                      <?php } ?>
+                      < ?php foreach (Connection::QueryAll("select * from categoria") as $item) { ?>
+                        <option value="< ?= $item->id ?>">< ?= $item->nome ?></option>
+                      < ?php } ?>
                     </select>
                   </div>
                 </div>
@@ -103,12 +103,12 @@ require_once 'config.php';
                   <div class="form-group">
                     <label for="fornecedor">Fornecedor</label>
                     <select class="form-control" name="fornecedor" id="fornecedor" required>
-                      <?php foreach (Connection::QueryAll("select * from fornecedor") as $item) { ?>
-                        <option value="<?= $item->id ?>"><?= $item->razao_social ?></option>
-                      <?php } ?>
+                      < ?php foreach (Connection::QueryAll("select * from fornecedor") as $item) { ?>
+                        <option value="< ?= $item->id ?>">< ?= $item->razao_social ?></option>
+                      < ?php } ?>
                     </select>
                   </div>
-                </div>
+                </div> -->
                 <div class="col-12 flex-row-reverse">
                   <div class="form-group float-right">
                     <input class="btn btn-success" type="submit" value="Inserir">
@@ -116,6 +116,7 @@ require_once 'config.php';
                   </div>
                 </div>
               </div>
+              <input type="hidden" name="produto_id" id="produto_id">
             </form>
           </div>
         </div>
@@ -125,7 +126,25 @@ require_once 'config.php';
 </body>
 
 <script>
-  $(document).ready(() => $('#cancelar').on('click', () => location = 'produtos.php'))
+  const { log } = console
+  $(document).ready(() => {
+    $('#cancelar').on('click', () => location = 'produtos.php')
+    $('#codigo').on('keyup', function() {
+      const el = $(this)
+      if (el.val().length === 0) return
+      if (!el.val().match(/\d+/)) return
+      fetch(`./busca.php?action=search&codigo=${el.val()}`)
+      .then(d => d.json())
+      .then(d => log(d) || d)
+      .then(d => {
+        $('#nome').val(d.nome)
+        $('#volume').val(d.volume)
+        $('#medida').val(d.unidade_medida)
+        $('#produto_id').val(d.id)
+      })
+      .catch(log)
+    })
+  })
 </script>
 
 </html>

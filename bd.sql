@@ -30,15 +30,25 @@ create table `produto` (
   `id` int auto_increment primary key,
   `codigo_barra` varchar(100) not null,
   `nome` varchar(45) not null,
-  `quantidade_estoque` int(11) not null,
-  `preco_compra` double not null,
-  `preco_venda` double not null,
   `volume` int(11) not null,
   `unidade_medida` varchar(45) not null,
   `categoria_id` int(11) not null,
   foreign key (`categoria_id`) references `categoria` (`id`),
   `fornecedor_id` int(11) not null,
   foreign key (`fornecedor_id`) references `fornecedor` (`id`)
+);
+
+drop table if exists `transacao`;
+create table `transacao` (
+  `id` int auto_increment primary key,
+  `tipo` enum('compra', 'venda') not null,
+  `data` datetime not null default current_timestamp,
+  `quantidade` int not null,
+  `preco` double not null,
+  `produto_id` int(11) not null,
+  foreign key (`produto_id`) references `produto` (`id`),
+  `usuario_id` int(11) not null,
+  foreign key (`usuario_id`) references `usuario` (`id`)
 );
 
 -- triggers
@@ -74,9 +84,6 @@ create trigger `produto_AFTER_INSERT` after insert on `produto` for each row beg
 		'insert into produto', '\n',
     'codigo_barra: ', new.codigo_barra, '\n',
     'nome: ', new.nome, '\n',
-    'quantidade_estoque: ', new.quantidade_estoque, '\n',
-    'preco_compra: ', new.preco_compra, '\n',
-    'preco_venda: ', new.preco_venda, '\n',
     'volume: ', new.volume, '\n',
     'unidade_medida: ', new.unidade_medida, '\n',
     'categoria_id: ', new.categoria_id, '\n',
@@ -86,16 +93,31 @@ end
 $$
 delimiter ;
 
+drop trigger if exists `transacao_AFTER_INSERT`;
+delimiter $$
+create trigger `transacao_AFTER_INSERT` after insert on `transacao` for each row begin
+	insert into `log` (descricao) values (concat(
+		'insert into transacao', '\n',
+    'tipo: ', new.tipo, '\n',
+    'data: ', new.data, '\n',
+    'produto_id: ', new.produto_id, '\n',
+    'usuario_id: ', new.usuario_id
+	));
+end
+$$
+delimiter ;
+
 -- view
 
 drop view if exists `ver_produto`;
-CREATE view `ver_produto` as
+create view `ver_produto` as
 select
   `p`.*,
+  coalesce((select sum(quantidade) from transacao where produto_id = `p`.id and tipo = 'compra'), 0) as `quantidade`,
   `c`.`nome` as `categoria`,
-  `f`.`cnpj` AS `cnpj`,
-  `f`.`razao_social` AS `razao_social`,
-  `f`.`nome_fantasia` AS `nome_fantasia`
+  `f`.`cnpj` as `cnpj`,
+  `f`.`razao_social` as `razao_social`,
+  `f`.`nome_fantasia` as `nome_fantasia`
 from `produto` `p`
 join `fornecedor` `f` on((`p`.`fornecedor_id` = `f`.`id`))
 join `categoria` `c` on((`p`.`categoria_id` = `c`.`id`));
@@ -105,9 +127,14 @@ insert into categoria (nome) values
 ('Gelados');
 
 insert into fornecedor (cnpj, razao_social, nome_fantasia) values
-('1234', 'Colca Cola', 'Colca Cola'),
+('1234', 'Coca Cola', 'Coca Cola'),
 ('5678', 'Pepsi', 'Pepsi');
 
-insert into produto (codigo_barra, nome, quantidade_estoque, preco_compra, preco_venda, volume, unidade_medida, categoria_id, fornecedor_id) values
-('1234', 'Colca Cola', '2', '3', '4', '600', 'ml', '1', '2'),
-('1234', 'Pepsi', '2', '3', '4', '600', 'ml', '1', '2');
+insert into produto (codigo_barra, nome, volume, unidade_medida, categoria_id, fornecedor_id) values
+('1234', 'Coca Cola', '600', 'ml', '1', '2'),
+('1235', 'Pepsi', '600', 'ml', '1', '2');
+
+select * from categoria;
+select * from fornecedor;
+select * from produto;
+select * from transacao;

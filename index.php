@@ -1,1 +1,1 @@
-<?php header("location: dados.php"); ?>
+<?php header("location: produtos.php"); ?>

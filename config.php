@@ -76,30 +76,56 @@ class Connection
   function __construct()
   {
     $action = $_REQUEST['action'] ?? null;
+    $class = $_REQUEST['class'] ?? null;
 
     switch ($action) {
       case 'create':
-        $tipo = $_REQUEST['tipo'];
-        $codigo_barra = $_REQUEST['codigo'];
-        $nome = $_REQUEST['nome'];
-        $quantidade_estoque = $_REQUEST['quantidade'];
-        $preco_compra = $_REQUEST['compra'] ?? 0;
-        $preco_venda = $_REQUEST['venda'] ?? 0;
-        $volume = $_REQUEST['volume'];
-        $unidade_medida = $_REQUEST['medida'];
-        $categoria_id = $_REQUEST['categoria'];
-        $fornecedor_id = $_REQUEST['fornecedor'];
-        switch ($tipo) {
-          case 'compra':
-            break;
-          case 'venda':
-            break;
-          default:
-            return;
-            break;
-        }
-        self::Query("insert into produto (codigo_barra, nome, quantidade_estoque, preco_compra, preco_venda, volume, unidade_medida, categoria_id, fornecedor_id) values ('$codigo_barra', '$nome', '$quantidade_estoque', '$preco_compra', '$preco_venda', '$volume', '$unidade_medida', '$categoria_id', '$fornecedor_id')");
+        if ($class === 'produto') self::ProdutoCreate();
+        if ($class === 'transacao') self::TransacaoCreate();
+        break;
+      case 'search':
+        self::Search();
+        break;
     }
+  }
+
+  static function ProdutoCreate()
+  {
+    $codigo_barra = $_REQUEST['codigo'];
+    $nome = $_REQUEST['nome'];
+    $volume = $_REQUEST['volume'];
+    $unidade_medida = $_REQUEST['medida'];
+    $categoria_id = $_REQUEST['categoria'];
+    $fornecedor_id = $_REQUEST['fornecedor'];
+
+    self::Query("insert into produto (codigo_barra, nome, volume, unidade_medida, categoria_id, fornecedor_id) values ('$codigo_barra', '$nome', '$volume', '$unidade_medida', '$categoria_id', '$fornecedor_id')");
+  }
+
+  static function TransacaoCreate()
+  {
+    $tipo = $_REQUEST['tipo'];
+    $data = $_REQUEST['data'];
+    $quantidade = $_REQUEST['quantidade'];
+    $preco = $_REQUEST['preco'];
+    $produto_id = $_REQUEST['produto_id'];
+    $usuario_id = $_REQUEST['usuario_id'] ?? 1;
+
+    self::Query("insert into transacao (tipo, data, quantidade, preco, produto_id, usuario_id) values ('$tipo', '$data', '$quantidade', '$preco', '$produto_id', '$usuario_id')");
+  }
+
+  static function Search()
+  {
+    header("content-type: application/json");
+
+    $codigo_barra = $_REQUEST['codigo'] ?? null;
+
+    if ($codigo_barra === null) {
+      echo json_encode(false);
+      exit;
+    }
+
+    $res = self::QueryObject("select * from ver_produto where codigo_barra = '$codigo_barra'");
+    echo json_encode($res);
   }
 }
 
