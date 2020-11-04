@@ -102,6 +102,7 @@ require_once 'config.php';
                   <th>Quantidade</th>
                   <th>Categoria</th>
                   <th>Fornecedor</th>
+                  <th>-</th>
                 </tr>
               </thead>
               <tbody>
@@ -112,6 +113,7 @@ require_once 'config.php';
                     <td><?= $item->quantidade ?></td>
                     <td><?= $item->categoria ?></td>
                     <td><?= $item->razao_social ?></td>
+                    <td><a class="btn btn-danger" href="./produtos.php?action=delete&class=produto&id=<?= $item->id ?>"><i class="fa fa-trash"></i></a></td>
                   </tr>
                 <?php } ?>
               </tbody>

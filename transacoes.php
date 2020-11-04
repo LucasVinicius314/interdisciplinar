@@ -27,6 +27,7 @@ require_once 'config.php';
                   <th>Quantidade</th>
                   <th>Preço</th>
                   <th>Produto</th>
+                  <th>-</th>
                 </tr>
               </thead>
               <tbody>
@@ -37,6 +38,7 @@ require_once 'config.php';
                     <td><?= $item->quantidade ?></td>
                     <td><?= $item->preco ?></td>
                     <td><?= $item->pnome ?></td>
+                    <td><a class="btn btn-danger" href="./transacoes.php?action=delete&class=transacao&id=<?= $item->id ?>"><i class="fa fa-trash"></i></a></td>
                   </tr>
                 <?php } ?>
               </tbody>

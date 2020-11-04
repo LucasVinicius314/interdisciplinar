@@ -100,6 +100,8 @@ create trigger `transacao_AFTER_INSERT` after insert on `transacao` for each row
 		'insert into transacao', '\n',
     'tipo: ', new.tipo, '\n',
     'data: ', new.data, '\n',
+    'quantidade: ', new.quantidade, '\n',
+    'preco: ', new.preco, '\n',
     'produto_id: ', new.produto_id, '\n',
     'usuario_id: ', new.usuario_id
 	));
@@ -145,6 +147,7 @@ insert into produto (codigo_barra, nome, volume, unidade_medida, categoria_id, f
 
 select * from categoria;
 select * from fornecedor;
+select * from log;
 select * from produto;
 select * from transacao;
 select * from ver_produto;

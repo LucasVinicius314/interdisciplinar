@@ -80,13 +80,51 @@ class Connection
 
     switch ($action) {
       case 'create':
+        if ($class === 'categoria') self::CategoriaCreate();
+        if ($class === 'fornecedor') self::FornecedorCreate();
         if ($class === 'produto') self::ProdutoCreate();
         if ($class === 'transacao') self::TransacaoCreate();
         break;
+        case 'delete':
+          if ($class === 'categoria') self::CategoriaDelete();
+          if ($class === 'fornecedor') self::FornecedorDelete();
+          if ($class === 'produto') self::ProdutoDelete();
+          if ($class === 'transacao') self::TransacaoDelete();
+          break;
       case 'search':
         self::Search();
         break;
     }
+  }
+
+  static function CategoriaCreate()
+  {
+    $nome = $_REQUEST['nome'];
+
+    self::Query("insert into categoria (nome) values ('$nome')");
+  }
+
+  static function CategoriaDelete()
+  {
+    $id = $_REQUEST['id'];
+
+    self::Query("delete from categoria where id = '$id'");
+  }
+
+  static function FornecedorCreate()
+  {
+    $cnpj = $_REQUEST['cnpj'];
+    $razao_social = $_REQUEST['razao_social'];
+    $nome_fantasia = $_REQUEST['nome_fantasia'];
+
+    self::Query("insert into fornecedor (cnpj, razao_social, nome_fantasia) values ('$cnpj', '$razao_social', '$nome_fantasia')");
+  }
+
+  static function FornecedorDelete()
+  {
+    $id = $_REQUEST['id'];
+
+    self::Query("delete from fornecedor where id = '$id'");
   }
 
   static function ProdutoCreate()
@@ -101,6 +139,13 @@ class Connection
     self::Query("insert into produto (codigo_barra, nome, volume, unidade_medida, categoria_id, fornecedor_id) values ('$codigo_barra', '$nome', '$volume', '$unidade_medida', '$categoria_id', '$fornecedor_id')");
   }
 
+  static function ProdutoDelete()
+  {
+    $id = $_REQUEST['id'];
+
+    self::Query("delete from produto where id = '$id'");
+  }
+
   static function TransacaoCreate()
   {
     $tipo = $_REQUEST['tipo'];
@@ -111,6 +156,13 @@ class Connection
     $usuario_id = $_REQUEST['usuario_id'] ?? 1;
 
     self::Query("insert into transacao (tipo, data, quantidade, preco, produto_id, usuario_id) values ('$tipo', '$data', '$quantidade', '$preco', '$produto_id', '$usuario_id')");
+  }
+
+  static function TransacaoDelete()
+  {
+    $id = $_REQUEST['id'];
+
+    self::Query("delete from transacao where id = '$id'");
   }
 
   static function Search()

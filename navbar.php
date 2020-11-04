@@ -5,6 +5,12 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
+      <li class="nav-item <?= PAGE === 'categorias' ? 'active' : '' ?>">
+        <a class="nav-link" href="categorias.php">Categorias</a>
+      </li>
+      <li class="nav-item <?= PAGE === 'fornecedores' ? 'active' : '' ?>">
+        <a class="nav-link" href="fornecedores.php">Fornecedores</a>
+      </li>
       <li class="nav-item <?= PAGE === 'produtos' ? 'active' : '' ?>">
         <a class="nav-link" href="produtos.php">Produtos</a>
       </li>

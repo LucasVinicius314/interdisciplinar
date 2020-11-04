@@ -19,7 +19,7 @@ require_once 'config.php';
             <h3 class="card-title h-100 pt-2">Transação</h3>
           </div>
           <div class="card-body">
-            <form action="produtos.php?action=create&class=transacao" method="post">
+            <form action="transacoes.php?action=create&class=transacao" method="post">
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
