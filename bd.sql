@@ -25,6 +25,15 @@ create table `log` (
   `descricao` varchar(500) not null
 );
 
+drop table if exists `usuario`;
+create table `usuario` (
+  `id` int auto_increment primary key,
+  `nome` varchar(100) not null,
+  `email` varchar(100) not null unique,
+  `senha` char(40) not null,
+  `avatar` varchar(45) not null default 'default.png'
+);
+
 drop table if exists `produto`;
 create table `produto` (
   `id` int auto_increment primary key,
@@ -129,9 +138,11 @@ create view `ver_transacao` as
 select
   `t`.*,
   `p`.`nome` as `pnome`,
-  `p`.`codigo_barra`
+  `p`.`codigo_barra`,
+  `u`.`nome` as `usuario`
 from `transacao` `t`
-join `produto` `p` on((`t`.`produto_id` = `p`.`id`));
+join `produto` `p` on((`t`.`produto_id` = `p`.`id`))
+join `usuario` `u` on((`t`.`usuario_id` = `u`.`id`));
 
 insert into categoria (nome) values
 ('Bebidas'),
@@ -145,9 +156,12 @@ insert into produto (codigo_barra, nome, volume, unidade_medida, categoria_id, f
 ('1234', 'Coca Cola', '600', 'ml', '1', '2'),
 ('1235', 'Pepsi', '600', 'ml', '1', '2');
 
+insert into usuario (nome, email, senha) values ('Sure', 'sure@gmail.com', sha1('1234'));
+
 select * from categoria;
 select * from fornecedor;
 select * from log;
+select * from usuario;
 select * from produto;
 select * from transacao;
 select * from ver_produto;

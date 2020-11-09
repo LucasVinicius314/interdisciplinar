@@ -42,10 +42,13 @@ class Connection
     try {
       $sql = self::Connect()->prepare($sql);
       $sql->execute();
+      var_dump($sql->errorInfo()[0]);
+      if ($sql->errorInfo()[0] !== '00000') throw new PDOException($sql->errorInfo()[2]);
 
       return true;
     } catch (PDOException $e) {
       Util::Error($e->getMessage());
+      return false;
     }
   }
 
@@ -54,6 +57,7 @@ class Connection
     try {
       $sql = self::Connect()->prepare($sql);
       $sql->execute();
+      if ($sql->errorInfo()[0] !== '00000') throw new PDOException($sql->errorInfo()[2]);
 
       return $sql->fetchAll(PDO::FETCH_CLASS);
     } catch (PDOException $e) {
@@ -66,6 +70,7 @@ class Connection
     try {
       $sql = self::Connect()->prepare($sql);
       $sql->execute();
+      if ($sql->errorInfo()[0] !== '00000') throw new PDOException($sql->errorInfo()[2]);
 
       return $sql->fetchObject();
     } catch (PDOException $e) {
@@ -75,6 +80,8 @@ class Connection
 
   function __construct()
   {
+    if (PAGE !== 'login' && PAGE !== 'cadastro' && PAGE !== 'search') self::Auth();
+
     $action = $_REQUEST['action'] ?? null;
     $class = $_REQUEST['class'] ?? null;
 
@@ -85,16 +92,65 @@ class Connection
         if ($class === 'produto') self::ProdutoCreate();
         if ($class === 'transacao') self::TransacaoCreate();
         break;
-        case 'delete':
-          if ($class === 'categoria') self::CategoriaDelete();
-          if ($class === 'fornecedor') self::FornecedorDelete();
-          if ($class === 'produto') self::ProdutoDelete();
-          if ($class === 'transacao') self::TransacaoDelete();
-          break;
+      case 'delete':
+        if ($class === 'categoria') self::CategoriaDelete();
+        if ($class === 'fornecedor') self::FornecedorDelete();
+        if ($class === 'produto') self::ProdutoDelete();
+        if ($class === 'transacao') self::TransacaoDelete();
+        break;
       case 'search':
         self::Search();
         break;
+      case 'login':
+        self::Login();
+        break;
+      case 'logout':
+        self::Logout();
+        break;
+      case 'register':
+        self::Register();
+        break;
     }
+  }
+
+  static function Auth()
+  {
+    if ($_SESSION['usuario'] === null) {
+      header('location: ./login');
+      exit;
+    }
+  }
+
+  static function Login()
+  {
+    $email = $_REQUEST['email'];
+    $senha = sha1($_REQUEST['senha']);
+
+    $res = self::QueryObject("select * from usuario where email = '$email' and senha = '$senha'");
+
+    if ($res) {
+      $_SESSION['usuario'] = $res;
+      header("location: produtos.php");
+    } else Util::Error('Usuário ou senha incorretos');
+  }
+
+  static function Register()
+  {
+    $nome = $_REQUEST['nome'];
+    $email = $_REQUEST['email'];
+    $senha = sha1($_REQUEST['senha']);
+
+    $res = self::Query("insert into usuario (nome, email, senha) values ('$nome', '$email', '$senha')");
+
+    if ($res === true) {
+      header("location: login.php");
+      Util::Error('Usuário criado');
+    } else Util::Error('Usuário não criado');
+  }
+
+  static function Logout()
+  {
+    $_SESSION['usuario'] = null;
   }
 
   static function CategoriaCreate()
@@ -153,7 +209,7 @@ class Connection
     $quantidade = $_REQUEST['quantidade'];
     $preco = $_REQUEST['preco'];
     $produto_id = $_REQUEST['produto_id'];
-    $usuario_id = $_REQUEST['usuario_id'] ?? 1;
+    $usuario_id = $_SESSION['usuario']->id;
 
     self::Query("insert into transacao (tipo, data, quantidade, preco, produto_id, usuario_id) values ('$tipo', '$data', '$quantidade', '$preco', '$produto_id', '$usuario_id')");
   }
