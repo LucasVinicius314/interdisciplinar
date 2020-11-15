@@ -16,6 +16,8 @@ define('SERVER', "mysql:host=$server;dbname=$database;charset=utf8");
 define('UID', $uid);
 define('PASSWORD', $password);
 
+$fmt = numfmt_create( 'pt_BR', NumberFormatter::CURRENCY );
+
 class Util
 {
   static function Money($string)
@@ -42,7 +44,6 @@ class Connection
     try {
       $sql = self::Connect()->prepare($sql);
       $sql->execute();
-      var_dump($sql->errorInfo()[0]);
       if ($sql->errorInfo()[0] !== '00000') throw new PDOException($sql->errorInfo()[2]);
 
       return true;

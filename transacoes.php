@@ -37,7 +37,7 @@ require_once 'config.php';
                     <td><?= $item->tipo ?></td>
                     <td><?= $item->data ?></td>
                     <td><?= $item->quantidade ?></td>
-                    <td><?= $item->preco ?></td>
+                    <td><?= numfmt_format_currency($fmt, $item->preco, 'BRL') ?></td>
                     <td><?= $item->pnome ?></td>
                     <td><?= $item->usuario ?></td>
                     <td><a class="btn btn-danger" href="./transacoes.php?action=delete&class=transacao&id=<?= $item->id ?>"><i class="fa fa-trash"></i></a></td>
