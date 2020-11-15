@@ -11,6 +11,9 @@
     th {
       font-size: 12px;
     }
+    .heightfill {
+      min-height: 100vh;
+    }
   </style>
   <script src="./js/jquery-3.4.1.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.js"></script>

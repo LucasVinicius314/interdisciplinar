@@ -11,8 +11,7 @@ require_once 'config.php';
 
   <?php include 'navbar.php' ?>
 
-  <main class="container my-3">
-
+  <main class="container my-3 heightfill">
     <div class="row justify-content-center">
       <div class="col-md-6">
         <div class="card">
@@ -42,12 +41,9 @@ require_once 'config.php';
       </div>
     </div>
   </main>
+
+  <?php include 'footer.php' ?>
+
 </body>
-
-<script>
-  $(document).ready(() => {
-
-  })
-</script>
 
 </html>

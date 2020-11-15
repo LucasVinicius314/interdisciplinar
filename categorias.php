@@ -11,8 +11,7 @@ require_once 'config.php';
 
   <?php include 'navbar.php' ?>
 
-  <main class="container my-3">
-
+  <main class="container my-3 heightfill">
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -43,7 +42,6 @@ require_once 'config.php';
         </div>
       </div>
     </div>
-
     <div class="row">
       <div class="col-md-12">
         <div class="card">
@@ -75,6 +73,9 @@ require_once 'config.php';
       </div>
     </div>
   </main>
+
+  <?php include 'footer.php' ?>
+
 </body>
 
 <script>

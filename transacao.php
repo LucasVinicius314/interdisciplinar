@@ -11,7 +11,7 @@ require_once 'config.php';
 
   <?php include 'navbar.php' ?>
 
-  <main class="container my-3">
+  <main class="container my-3 heightfill">
     <div class="row">
       <div class="col-md-12">
         <div class="card">
@@ -103,10 +103,15 @@ require_once 'config.php';
       </div>
     </div>
   </main>
+
+  <?php include 'footer.php' ?>
+
 </body>
 
 <script>
-  const { log } = console
+  const {
+    log
+  } = console
   $(document).ready(() => {
     $('#cancelar').on('click', () => location = 'produtos.php')
     $('#codigo').on('keyup', function() {
@@ -114,15 +119,15 @@ require_once 'config.php';
       if (el.val().length === 0) return
       if (!el.val().match(/\d+/)) return
       fetch(`./busca.php?action=search&codigo=${el.val()}`)
-      .then(d => d.json())
-      .then(d => log(d) || d)
-      .then(d => {
-        $('#nome').val(d.nome)
-        $('#volume').val(d.volume)
-        $('#medida').val(d.unidade_medida)
-        $('#produto_id').val(d.id)
-      })
-      .catch(log)
+        .then(d => d.json())
+        .then(d => log(d) || d)
+        .then(d => {
+          $('#nome').val(d.nome)
+          $('#volume').val(d.volume)
+          $('#medida').val(d.unidade_medida)
+          $('#produto_id').val(d.id)
+        })
+        .catch(log)
     })
   })
 </script>
